@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scam Check — Internship & Job Scam Detector for Students</title>
+  <meta name="description" content="A client-side tool for Indian college students to check whether an internship, job offer, or gig message is a scam. No data leaves your browser." />
+  <script type="module" crossorigin src="/assets/index-5xOKYLHb.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-9ZkDjFuS.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="app-header" role="banner">
+      <div class="brand-wrap">
+        <h1 class="app-title">
+          <span class="shield-icon" aria-hidden="true">🛡️</span>
+          <span>Scam Check</span>
+        </h1>
+        <p class="app-subtitle">For Indian college students — check internship, job & gig messages</p>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Toggle dark/light theme">
+          <span id="themeIcon" aria-hidden="true">🌙</span>
+          <span id="themeLabel">Dark</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Privacy Banner -->
+    <div class="privacy-badge-banner" role="status">
+      <span aria-hidden="true">🔒</span>
+      <span><strong>100% Client-Side & Private:</strong> Everything is checked directly in your browser. Nothing is uploaded to any server. Blur names and phone numbers before sharing screenshots with others.</span>
+    </div>
+
+    <!-- Main Tabs Navigation -->
+    <nav aria-label="Tool sections">
+      <div class="tabs-nav" role="tablist">
+        <button id="tabBtnText" class="tab-btn" role="tab" aria-selected="true" aria-controls="panelText" tabindex="0">
+          <span aria-hidden="true">💬</span> Message Text
+        </button>
+        <button id="tabBtnLink" class="tab-btn" role="tab" aria-selected="false" aria-controls="panelLink" tabindex="-1">
+          <span aria-hidden="true">🔗</span> Check Link
+        </button>
+        <button id="tabBtnScreenshot" class="tab-btn" role="tab" aria-selected="false" aria-controls="panelScreenshot" tabindex="-1">
+          <span aria-hidden="true">📷</span> Screenshot
+        </button>
+        <button id="tabBtnScams" class="tab-btn" role="tab" aria-selected="false" aria-controls="panelScams" tabindex="-1">
+          <span aria-hidden="true">📚</span> Common Scams
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="mainContent">
+
+      <!-- TAB 1: MESSAGE TEXT -->
+      <section id="panelText" class="tab-panel active" role="tabpanel" aria-labelledby="tabBtnText">
+        <div class="card">
+          <div class="card-title">
+            <span aria-hidden="true">📝</span> Check Message or Email
+          </div>
+          <p class="card-desc">
+            Paste the WhatsApp, Telegram, email, or Instagram message you received. We will check it for upfront fees, task traps, lookalike links, and fake HR senders.
+          </p>
+
+          <div>
+            <label for="messageInput" class="input-label">Message text (English or Hinglish):</label>
+            <textarea id="messageInput" class="input-textarea" placeholder="Paste the message here (e.g. 'Dear candidate, you are selected for TCS internship...')" rows="5"></textarea>
+          </div>
+
+          <div class="samples-bar">
+            <span>Quick samples:</span>
+            <button type="button" class="sample-chip" data-sample="clear-scam-1">Clear Scam (Fee + Task)</button>
+            <button type="button" class="sample-chip" data-sample="clear-scam-2">Laptop courier scam</button>
+            <button type="button" class="sample-chip" data-sample="borderline-1">Borderline WhatsApp</button>
+            <button type="button" class="sample-chip" data-sample="legit-1">Legitimate TCS invite</button>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="checkMessageBtn" type="button" class="btn-primary" style="flex: 1;">
+              <span aria-hidden="true">🔍</span> Check Message
+            </button>
+            <button id="clearMessageBtn" type="button" class="btn-secondary">
+              Clear
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: LINK CHECK -->
+      <section id="panelLink" class="tab-panel" role="tabpanel" aria-labelledby="tabBtnLink">
+        <div class="card">
+          <div class="card-title">
+            <span aria-hidden="true">🔗</span> Analyze Suspicious URL
+          </div>
+          <p class="card-desc">
+            Paste a recruitment link to inspect its structure.
+            <strong>Note:</strong> We analyze the web address string only (shorteners, IP addresses, punycode, brand names in subdomains, risky domains, and typo-squatting). <em>The page content itself cannot be opened or fetched by your browser.</em>
+          </p>
+
+          <div>
+            <label for="linkInput" class="input-label">Recruitment website or link URL:</label>
+            <input type="url" id="linkInput" class="input-text" placeholder="https://infosys.campus-drive.xyz/apply" />
+          </div>
+
+          <div class="samples-bar">
+            <span>Quick link samples:</span>
+            <button type="button" class="sample-chip" data-link="http://infosys.campus-hiring-drive.xyz/apply">Subdomain brand scam</button>
+            <button type="button" class="sample-chip" data-link="https://bit.ly/tcs-free-internship">Shortener link</button>
+            <button type="button" class="sample-chip" data-link="https://infossys.com/careers">Lookalike domain</button>
+            <button type="button" class="sample-chip" data-link="https://nextstep.tcs.com/campus/">Official TCS domain</button>
+          </div>
+
+          <button id="checkLinkBtn" type="button" class="btn-primary">
+            <span aria-hidden="true">🔍</span> Analyze URL Structure
+          </button>
+        </div>
+      </section>
+
+      <!-- TAB 3: SCREENSHOT OCR -->
+      <section id="panelScreenshot" class="tab-panel" role="tabpanel" aria-labelledby="tabBtnScreenshot">
+        <div class="card">
+          <div class="card-title">
+            <span aria-hidden="true">📷</span> Check Screenshot from Chat
+          </div>
+          <p class="card-desc">
+            Upload, drag-and-drop, or paste (Ctrl+V / Cmd+V) a screenshot of the WhatsApp or Telegram message. 
+            <strong>Your image never leaves your device:</strong> text extraction is performed 100% locally using bundled in-browser OCR (Tesseract.js).
+          </p>
+
+          <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Drop screenshot here or click to select image">
+            <span class="dropzone-icon" aria-hidden="true">📁</span>
+            <span class="dropzone-text">Click to choose image, drag & drop, or paste (Ctrl+V)</span>
+            <span class="dropzone-hint">Supports PNG, JPG, WebP. Recommended: blur any personal phone numbers.</span>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;" />
+          </div>
+
+          <!-- Progress indicator -->
+          <div id="ocrProgressContainer" class="progress-container" aria-live="polite">
+            <div class="progress-label">
+              <span id="ocrStatusText">Loading OCR engine...</span>
+              <span id="ocrPercentText">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div id="ocrProgressBar" class="progress-bar-fill"></div>
+            </div>
+          </div>
+
+          <!-- Editable extracted text -->
+          <div id="ocrEditArea" style="display: none; flex-direction: column; gap: 0.5rem;">
+            <label for="ocrExtractedText" class="input-label">Extracted text (review & correct any OCR typos before checking):</label>
+            <textarea id="ocrExtractedText" class="input-textarea" rows="5"></textarea>
+            <button id="checkOcrBtn" type="button" class="btn-primary">
+              <span aria-hidden="true">🔍</span> Check Extracted Text
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: COMMON SCAMS -->
+      <section id="panelScams" class="tab-panel" role="tabpanel" aria-labelledby="tabBtnScams">
+        <div class="card">
+          <div class="card-title">
+            <span aria-hidden="true">📚</span> Common Student Scam Patterns in India
+          </div>
+          <p class="card-desc">
+            Published security advisories from I4C, CERT-In, and the RBI show that fraudsters target college students with recurring deceptive tactics. Click below to inspect real-world scam anatomy:
+          </p>
+
+          <div id="commonScamsContainer" class="flags-list">
+            <!-- Dynamically populated or static breakdown -->
+          </div>
+        </div>
+      </section>
+
+      <!-- RESULTS CONTAINER (Shared across all check actions) -->
+      <section id="resultsSection" style="display: none; margin-top: 1.25rem;" aria-live="polite">
+        <!-- Result card is rendered here by main.js -->
+      </section>
+
+    </main>
+
+    <!-- Footer & Mandatory Disclaimers -->
+    <footer class="app-footer" role="contentinfo">
+      <p class="disclaimer-text">
+        <strong>⚠️ Prototype & Educational Aid:</strong> Scam Check is a client-side detection tool developed for student life safety awareness. It is not an official background check or a legal guarantee. Always independently verify offers via the employer's official website.
+      </p>
+      <div class="footer-links">
+        <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer">Cyber Crime Portal (cybercrime.gov.in)</a>
+        <a href="https://sancharsaathi.gov.in" target="_blank" rel="noopener noreferrer">Sanchar Saathi (Chakshu)</a>
+        <a href="https://internship.aicte-india.org" target="_blank" rel="noopener noreferrer">AICTE Internship Portal</a>
+      </div>
+      <p style="margin-top: 0.25rem;">National Cybercrime Helpline: <strong>Dial 1930</strong> (Toll-free)</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+

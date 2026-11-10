@@ -1,0 +1,457 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "project": "Scam Check",
+    "description": "Rule set for detecting student-targeted internship, job, and gig scams in India",
+    "lastUpdated": "2026-11-10",
+    "thresholds": {
+      "likely_scam": 40,
+      "suspicious": 20
+    }
+  },
+  "reportingChannels": [
+    {
+      "name": "National Cyber Crime Reporting Portal",
+      "url": "https://cybercrime.gov.in",
+      "helpline": "1930",
+      "description": "Ministry of Home Affairs portal for financial fraud and cyber crime reporting. Dial 1930 immediately if money has been sent."
+    },
+    {
+      "name": "Chakshu (Sanchar Saathi - DoT)",
+      "url": "https://sancharsaathi.gov.in",
+      "helpline": "1930",
+      "description": "Department of Telecommunications platform to report suspected fraud communications via SMS, WhatsApp, or calls."
+    },
+    {
+      "name": "AICTE Official Internship Portal",
+      "url": "https://internship.aicte-india.org",
+      "description": "Official portal for AICTE internship verification. AICTE mandates that all internships are strictly zero-fee for students."
+    }
+  ],
+  "verifiedOfficialDomains": [
+    {
+      "company": "Tata Consultancy Services (TCS)",
+      "primaryDomain": "tcs.com",
+      "careerDomains": ["tcs.com", "careers.tcs.com", "nextstep.tcs.com"]
+    },
+    {
+      "company": "Infosys",
+      "primaryDomain": "infosys.com",
+      "careerDomains": ["infosys.com", "careers.infosys.com", "career.infosys.com"]
+    },
+    {
+      "company": "Wipro",
+      "primaryDomain": "wipro.com",
+      "careerDomains": ["wipro.com", "careers.wipro.com"]
+    },
+    {
+      "company": "Cognizant",
+      "primaryDomain": "cognizant.com",
+      "careerDomains": ["cognizant.com", "careers.cognizant.com"]
+    },
+    {
+      "company": "Accenture",
+      "primaryDomain": "accenture.com",
+      "careerDomains": ["accenture.com"]
+    },
+    {
+      "company": "Google",
+      "primaryDomain": "google.com",
+      "careerDomains": ["google.com", "careers.google.com"]
+    },
+    {
+      "company": "Microsoft",
+      "primaryDomain": "microsoft.com",
+      "careerDomains": ["microsoft.com", "careers.microsoft.com"]
+    },
+    {
+      "company": "Amazon",
+      "primaryDomain": "amazon.com",
+      "careerDomains": ["amazon.jobs", "jobs.amazon.in", "amazon.com"]
+    },
+    {
+      "company": "AICTE Internship Portal",
+      "primaryDomain": "aicte-india.org",
+      "careerDomains": ["internship.aicte-india.org", "aicte-india.org"]
+    },
+    {
+      "company": "Internshala",
+      "primaryDomain": "internshala.com",
+      "careerDomains": ["internshala.com"]
+    }
+  ],
+  "rules": [
+    {
+      "id": "PAY_UPFRONT_FEE",
+      "category": "payment",
+      "title": "Demand for upfront registration or processing fee",
+      "weight": 50,
+      "explanation": "Real companies never charge you an application, registration, or processing fee to give you a job or internship.",
+      "logic": {
+        "type": "regex",
+        "patterns": [
+          "(?:registration|application|processing|entry|enrollment|onboarding)\\s*(?:fee|fees|charge|charges|amount|cost)",
+          "(?:refundable|security|caution)\\s*(?:deposit|money|amount|fee|fees)",
+          "(?:pay|deposit|transfer|send)\\s*(?:rs\\.?|inr|₹|\\$)?\\s*\\d+\\s*(?:first|upfront|to\\s+apply|to\\s+register|for\\s+registration)",
+          "(?:pehle|advance|registration|refundable)\\s*(?:paisa|paise|fees|rupaye|amount)\\s*(?:do|dena|jama|pay|transfer)",
+          "(?:fees|charges|deposit)\\s*(?:dena\\s*hoga|bharna\\s*padega|pay\\s*karna)"
+        ]
+      },
+      "source": {
+        "name": "CERT-In Advisory CIAD-2024-0050 & RBI BE(A)WARE Booklet",
+        "url": "https://www.cert-in.org.in"
+      },
+      "falsePositiveRisk": "Low. Legitimate exam bodies (like UPSC/GATE) charge exam fees, but private company job offers or internships should never demand upfront payments."
+    },
+    {
+      "id": "PAY_EQUIPMENT_KIT",
+      "category": "payment",
+      "title": "Payment demanded for laptop, uniform, or training kit",
+      "weight": 45,
+      "explanation": "Legitimate employers never make candidates pay for laptops, IDs, training kits, or dispatch courier charges.",
+      "logic": {
+        "type": "regex",
+        "patterns": [
+          "(?:laptop|kit|material|uniform|id\\s*card|equipment|training\\s*kit|courier|dispatch)\\s*(?:charge|charges|fee|fees|cost|deposit)",
+          "(?:delivery|dispatch|shipping)\\s*(?:charge|charges|fee|fees)\\s*(?:for\\s+laptop|for\\s+kit)",
+          "(?:laptop|kit|uniform)\\s*(?:ke\\s+liye|ka)\\s*(?:paisa|charges|fees)"
+        ]
+      },
+      "source": {
+        "name": "RBI BE(A)WARE Booklet (Section on Job Frauds)",
+        "url": "https://www.rbi.org.in"
+      },
+      "falsePositiveRisk": "Low. Employers either supply equipment free of charge or require you to use personal devices; they never sell equipment via UPI/chat transfers."
+    },
+    {
+      "id": "PAY_DIRECT_UPI",
+      "category": "payment",
+      "title": "Direct personal UPI ID, QR code, or crypto payment request",
+      "weight": 40,
+      "explanation": "Companies process finances through official corporate banking channels, not personal UPI IDs or QR codes on WhatsApp/Telegram.",
+      "logic": {
+        "type": "regex",
+        "patterns": [
+          "[a-zA-Z0-9.\\-_]{2,256}@(okhdfcbank|okaxis|okicici|oksbi|paytm|ybl|ibl|upi|apl)",
+          "(?:scan|send\\s+to|pay\\s+via)\\s*(?:this)?\\s*(?:qr\\s*code|upi|gpay|phonepe|paytm)",
+          "(?:send|transfer)\\s*money\\s*to\\s*(?:upi|gpay|phonepe)",
+          "(?:upi|gpay|phonepe)\\s*(?:se\\s*pay\\s*karo|par\\s*bhejo)"
+        ]
+      },
+      "source": {
+        "name": "I4C / Ministry of Home Affairs Task Scam Advisory",
+        "url": "https://cybercrime.gov.in"
+      },
+      "falsePositiveRisk": "Medium. May trigger if discussing peer-to-peer payments or splitting college bills, but in an offer letter/recruitment context, it is a critical red flag."
+    },
+    {
+      "id": "MSG_TASK_SCAM",
+      "category": "message",
+      "title": "Task-based gig, YouTube like, or review rating scam",
+      "weight": 45,
+      "explanation": "Paying money to perform simple tasks like 'liking YouTube videos' or 'rating hotels' is the hallmark of I4C-warned part-time task fraud.",
+      "logic": {
+        "type": "regex",
+        "patterns": [
+          "(?:like|subscribe)\\s*(?:to)?\\s*(?:youtube|yt)\\s*(?:video|videos|channel)",
+          "(?:rate|review)\\s*(?:google\\s*maps?|hotels?|products?|apps?)\\s*(?:and\\s*earn|for\\s*money|per\\s*review)",
+          "(?:per\\s*task|per\\s*like|per\\s*review)\\s*(?:rs\\.?|inr|₹|\\$)?\\s*\\d+",
+          "(?:prepaid|investment)\\s*task",
+          "(?:video\\s*like\\s*karo|review\\s*karke\\s*kamao|per\\s*review\\s*₹?\\d+)",
+          "(?:ghar\\s*baithe\\s*(?:kamai|kaam)|task\\s*complete\\s*karo)"
+        ]
+      },
+      "source": {
+        "name": "I4C (Indian Cyber Crime Coordination Centre) Task Fraud Advisory",
+        "url": "https://cybercrime.gov.in"
+      },
+      "falsePositiveRisk": "Very low. Major digital platforms prohibit paid engagement schemes; legitimate corporate internships do not offer per-like commissions."
+    },
+    {
+      "id": "MSG_UNREALISTIC_PAY",
+      "category": "message",
+      "title": "Unrealistic daily income for minimal or non-technical effort",
+      "weight": 30,
+      "explanation": "Promises of earning Rs 2,000–10,000 daily for typing, copy-pasting, or 1–2 hours of work are standard bait used by scammers.",
+      "logic": {
+        "type": "regex",
+        "patterns": [
+          "(?:earn|salary|income)\\s*(?:rs\\.?|inr|₹)?\\s*[1-9]\\d{3,5}\\s*(?:per\\s*day|daily|per\\s*hour|every\\s*day)",
+          "(?:daily\\s*income|daily\\s*payout|daily\\s*earning)\\s*(?:of)?\\s*(?:rs\\.?|inr|₹)?\\s*[1-9]\\d{2,5}",
+          "(?:typing|data\\s*entry|sms\\s*sending|form\\s*filling)\\s*job.*(?:\\d{3,5}\\s*(?:daily|per\\s*day))",
+          "(?:rozana|daily|har\\s*din)\\s*(?:₹|rs\\.?|inr)?\\s*[1-9]\\d{2,5}\\s*(?:kamaye|kamao|earning)",
+          "(?:1-2|2-3|half)\\s*(?:hours|ghante)\\s*work.*(?:\\d{3,5}\\s*(?:daily|per\\s*day|kamao))"
+        ]
+      },
+      "source": {
+        "name": "FTC Job Scams Guidance & I4C Public Advisories",
+        "url": "https://consumer.ftc.gov/articles/job-scams"
+      },
+      "falsePositiveRisk": "Medium. Genuine high-paying consultant roles exist, but unsolicited student messages offering guaranteed daily payouts for basic typing are almost always scams."
+    },
+    {
+      "id": "MSG_OFFER_NO_INTERVIEW",
+      "category": "message",
+      "title": "Immediate job offer or selection without interview or application",
+      "weight": 35,
+      "explanation": "Reputable companies do not issue instant selection letters or high-paying internships without a structured interview or assessment.",
+      "logic": {
+        "type": "regex",
+        "patterns": [
+          "(?:direct|immediate)\\s*(?:selection|joining|appointment|placement)\\s*(?:without|no)\\s*(?:interview|exam|test)",
+          "(?:selected|shortlisted)\\s*(?:directly)?\\s*(?:without|no)\\s*(?:any)?\\s*(?:interview|test)",
+          "congratulations!\\s*you\\s*(?:have\\s+been|are)\\s*selected\\s*for\\s*(?:the\\s+post|internship)",
+          "(?:bina|without)\\s*interview\\s*(?:ke)?\\s*(?:direct)?\\s*(?:selection|joining|offer)",
+          "seedha\\s*(?:selection|joining|offer\\s*letter)"
+        ]
+      },
+      "source": {
+        "name": "RBI BE(A)WARE Booklet & CERT-In Advisory CIAD-2024-0050",
+        "url": "https://www.rbi.org.in"
+      },
+      "falsePositiveRisk": "Low. Walk-in drive notifications may invite candidates without prior interviews, but they do not claim you are already selected with an offer letter."
+    },
+    {
+      "id": "MSG_SENSITIVE_DATA",
+      "category": "message",
+      "title": "Request for OTP, banking credentials, or PIN before joining",
+      "weight": 50,
+      "explanation": "Never share an OTP, ATM PIN, UPI PIN, or bank password. No recruiter ever needs your OTP or bank security codes.",
+      "logic": {
+        "type": "regex",
+        "patterns": [
+          "(?:share|send|provide|enter|verify)\\s*(?:your)?\\s*(?:otp|one\\s*time\\s*password|upi\\s*pin|atm\\s*pin|cvv|net\\s*banking\\s*password)",
+          "(?:otp|pin|cvv)\\s*(?:bhejo|share\\s*(?:karo|karein)|batao|enter\\s*(?:karo|karein))",
+          "(?:aadhaar|pan\\s*card)\\s*(?:front\\s*and\\s*back|photo)\\s*(?:immediately|urgent)"
+        ]
+      },
+      "source": {
+        "name": "RBI Kehta Hai / Cyber Crime Security Guidelines",
+        "url": "https://cybercrime.gov.in"
+      },
+      "falsePositiveRisk": "Very low. Authentic onboarding portals have secure document upload steps after an offer is formalized; they never demand OTPs or payment PINs over chat."
+    },
+    {
+      "id": "MSG_ARTIFICIAL_URGENCY",
+      "category": "message",
+      "title": "Artificial urgency, extreme time pressure, or fear tactics",
+      "weight": 15,
+      "explanation": "Scammers create artificial pressure (e.g. 'offer expires in 15 minutes') to stop you from researching or asking advice.",
+      "logic": {
+        "type": "regex",
+        "patterns": [
+          "(?:valid|expires|offer\\s*ends|act\\s*fast)\\s*(?:in|within)?\\s*(?:10|15|30|60)\\s*(?:mins?|minutes?|hours?)",
+          "(?:limited|few)\\s*(?:seats|vacancies|spots)\\s*(?:left|remaining|only)",
+          "(?:jaldi\\s*karo|offer\\s*khatam|aakhri\\s*mauka|last\\s*chance)",
+          "(?:immediately|urgent|today\\s*only)\\s*(?:confirm|reply|register|pay)"
+        ]
+      },
+      "source": {
+        "name": "UK NCSC Phishing Guidance & CISA Email Scam Advisory",
+        "url": "https://www.ncsc.gov.uk/collection/phishing-scams"
+      },
+      "falsePositiveRisk": "High as an isolated signal (marketing promotions and campus drive deadlines often have deadlines). Used as an auxiliary weight."
+    },
+    {
+      "id": "SND_FREE_MAILBOX",
+      "category": "sender",
+      "title": "Corporate recruiter using free public webmail (@gmail, @yahoo)",
+      "weight": 35,
+      "explanation": "Recruiters from established organizations (e.g. TCS, Infosys, Amazon) always use their corporate domain email, never generic @gmail.com or @yahoo.com.",
+      "logic": {
+        "type": "regex",
+        "patterns": [
+          "(?:hr|recruiter|careers|jobs|talent|hiring|placement)?[a-zA-Z0-9._%+-]*@(gmail\\.com|yahoo\\.com|outlook\\.com|hotmail\\.com|rediffmail\\.com|zoho\\.com)",
+          "(?:tcs|infosys|wipro|cognizant|accenture|google|microsoft|amazon)[a-zA-Z0-9._%+-]*@(gmail\\.com|yahoo\\.com|outlook\\.com)"
+        ]
+      },
+      "source": {
+        "name": "Google Anti-Phishing Guidelines & AICTE Caution Notice",
+        "url": "https://support.google.com/mail/answer/8253"
+      },
+      "falsePositiveRisk": "Low for claims representing large IT/MNC brands. Early-stage student startups may occasionally use Gmail, but established recruiters never do."
+    },
+    {
+      "id": "SND_CHAT_REDIRECT",
+      "category": "sender",
+      "title": "Redirecting official corporate business to Telegram or WhatsApp",
+      "weight": 25,
+      "explanation": "Scammers shift conversations to Telegram or WhatsApp to evade enterprise email security filters and delete chat histories.",
+      "logic": {
+        "type": "regex",
+        "patterns": [
+          "(?:contact|message|dm|connect|join)\\s*(?:us|me|hr|manager)?\\s*(?:on|via)?\\s*(?:telegram|whatsapp|wa\\.me|t\\.me)",
+          "(?:t\\.me\\/[a-zA-Z0-9_]+|wa\\.me\\/[0-9]+)",
+          "(?:telegram|whatsapp)\\s*(?:par\\s*message\\s*karein|join\\s*karo|par\\s*aao)"
+        ]
+      },
+      "source": {
+        "name": "I4C Advisories on Telegram/WhatsApp Job Recruitment Fraud",
+        "url": "https://cybercrime.gov.in"
+      },
+      "falsePositiveRisk": "Medium. Some modern recruiters use WhatsApp for interview reminders, but conducting the entire interview/hiring on Telegram is characteristic of fraud syndicates."
+    },
+    {
+      "id": "LNK_URL_SHORTENER",
+      "category": "link",
+      "title": "Obfuscated URL shortener hiding the real destination",
+      "weight": 20,
+      "explanation": "Shorteners like bit.ly, tinyurl, and cutt.ly hide the true website address, preventing you from seeing the actual target domain before clicking.",
+      "logic": {
+        "type": "url_domain",
+        "shortenerDomains": [
+          "bit.ly", "tinyurl.com", "t.ly", "cutt.ly", "is.gd", "rb.gy", "shorturl.at", "ow.ly", "buff.ly", "soo.gd"
+        ]
+      },
+      "source": {
+        "name": "UK NCSC Phishing Guidance & OWASP URL Handling Guidelines",
+        "url": "https://www.ncsc.gov.uk/collection/phishing-scams"
+      },
+      "falsePositiveRisk": "Medium. Legitimate SMS notifications occasionally use short links due to character limits, but students should never click unverified short links."
+    },
+    {
+      "id": "LNK_IP_HOST",
+      "category": "link",
+      "title": "Direct IP address host instead of registered domain name",
+      "weight": 40,
+      "explanation": "Authentic company career portals have domain names (e.g. company.com). Direct raw IP addresses (e.g. http://192.0.2.1) indicate temporary scam infrastructure.",
+      "logic": {
+        "type": "url_ip_host"
+      },
+      "source": {
+        "name": "OWASP Unvalidated Redirects and URL Security Guidelines",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html"
+      },
+      "falsePositiveRisk": "Very low. No commercial job board or enterprise employer sends students to naked IP addresses."
+    },
+    {
+      "id": "LNK_PUNYCODE_HOMOGRAPH",
+      "category": "link",
+      "title": "Punycode or IDN homograph character substitution",
+      "weight": 45,
+      "explanation": "Attackers substitute Cyrillic or special lookalike characters in brand names (showing as 'xn--...' in the URL) to disguise fake domains.",
+      "logic": {
+        "type": "url_punycode"
+      },
+      "source": {
+        "name": "OWASP Guidance on Internationalized Domain Name (IDN) Homograph Attacks",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html"
+      },
+      "falsePositiveRisk": "Very low in recruitment contexts."
+    },
+    {
+      "id": "LNK_USERINFO_TRICK",
+      "category": "link",
+      "title": "URL contains '@' symbol trick to mislead the reader",
+      "weight": 45,
+      "explanation": "In standard URLs, everything before an '@' sign is treated as username/password, and the browser actually connects to the host *after* the '@'.",
+      "logic": {
+        "type": "url_userinfo"
+      },
+      "source": {
+        "name": "OWASP URL Parsing & Unvalidated Redirects Guidelines",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html"
+      },
+      "falsePositiveRisk": "Very low. Legitimate career links never contain '@' credentials in the URL authority section."
+    },
+    {
+      "id": "LNK_BRAND_SUBDOMAIN_OR_PATH",
+      "category": "link",
+      "title": "Known company brand placed in subdomain or path of untrusted domain",
+      "weight": 35,
+      "explanation": "A link like 'tcs.careers-portal-india.com' is hosted on 'careers-portal-india.com', NOT TCS. Scammers put brand names in subdomains to trick you.",
+      "logic": {
+        "type": "url_brand_subdomain"
+      },
+      "source": {
+        "name": "Google Phishing Guidance & OWASP Link Parsing",
+        "url": "https://support.google.com/mail/answer/8253"
+      },
+      "falsePositiveRisk": "Low to medium. Requires checking whether the base domain is the official verified corporate domain."
+    },
+    {
+      "id": "LNK_RISKY_TLD",
+      "category": "link",
+      "title": "Use of high-abuse top level domains (TLD) for official branding",
+      "weight": 25,
+      "explanation": "Enterprise recruiters in India operate on .com, .in, or .org. Domains ending in .xyz, .top, .buzz, or .click are frequently exploited for ephemeral scam sites.",
+      "logic": {
+        "type": "url_risky_tld",
+        "riskyTlds": [
+          "xyz", "top", "click", "buzz", "site", "online", "club", "work", "loan", "rest", "cam"
+        ]
+      },
+      "source": {
+        "name": "CERT-In Phishing Advisories & Spamhaus Threat Analytics",
+        "url": "https://www.cert-in.org.in"
+      },
+      "falsePositiveRisk": "Medium. Some startups use .site or .online, but multinational IT recruiters do not host recruitment drives on high-abuse cheap TLDs."
+    },
+    {
+      "id": "LNK_LOOKALIKE_DOMAIN",
+      "category": "link",
+      "title": "Typo-squatted or lookalike domain of a verified enterprise",
+      "weight": 45,
+      "explanation": "This domain is suspiciously close to an official recruiting portal (e.g. 'infosys-jobs.com' or 'tcs-portal.net') but is not registered by the actual company.",
+      "logic": {
+        "type": "url_levenshtein_lookalike",
+        "maxEditDistance": 2
+      },
+      "source": {
+        "name": "CERT-In CIAD-2024-0050 & CISA Phishing Guidance",
+        "url": "https://www.cert-in.org.in"
+      },
+      "falsePositiveRisk": "Low when matched against established corporate brand names."
+    }
+  ],
+  "fictionalTestCases": [
+    {
+      "id": "TC_CLEAR_SCAM_1",
+      "type": "clear_scam",
+      "description": "Registration fee + Telegram task scam",
+      "input": "Dear Student, congratulations! You are selected for TCS Part-Time Online Internship. Daily income ₹2500 for YouTube video like and subscribe tasks. To activate your student employee portal, kindly pay a refundable registration fee of Rs 499 to hr-tcs-verify@okhdfcbank. Connect immediately on Telegram: t.me/tcs_careers_hr",
+      "expectedTriggeredRules": ["PAY_UPFRONT_FEE", "PAY_DIRECT_UPI", "MSG_TASK_SCAM", "MSG_UNREALISTIC_PAY", "MSG_OFFER_NO_INTERVIEW", "SND_CHAT_REDIRECT"],
+      "expectedVerdict": "Likely scam"
+    },
+    {
+      "id": "TC_CLEAR_SCAM_2",
+      "type": "clear_scam",
+      "description": "Laptop courier charge + OTP demand on WhatsApp",
+      "input": "Dear candidate, you are appointed as Data Entry Executive at Infosys without any interview. A company laptop and training kit will be dispatched to your home address. Pay dispatch courier charges of ₹1,200 via UPI QR code. Send screenshot and share OTP received on your mobile. Offer expires in 30 minutes.",
+      "expectedTriggeredRules": ["PAY_EQUIPMENT_KIT", "MSG_OFFER_NO_INTERVIEW", "MSG_SENSITIVE_DATA", "MSG_ARTIFICIAL_URGENCY"],
+      "expectedVerdict": "Likely scam"
+    },
+    {
+      "id": "TC_CLEAR_SCAM_3",
+      "type": "clear_scam",
+      "description": "Lookalike link with brand in subdomain + risky TLD",
+      "input": "Infosys Campus Recruitment 2026! Complete your profile here: http://infosys.campus-hiring-drive.xyz/apply and earn 5000 daily.",
+      "expectedTriggeredRules": ["LNK_BRAND_SUBDOMAIN_OR_PATH", "LNK_RISKY_TLD", "MSG_UNREALISTIC_PAY"],
+      "expectedVerdict": "Likely scam"
+    },
+    {
+      "id": "TC_BORDERLINE_1",
+      "type": "borderline",
+      "description": "Startup hiring via WhatsApp reminder with slight urgency",
+      "input": "Hi! We saw your profile for a front-end internship role at our studio. A few slots remain open for screening this week. Connect with our coordinator on WhatsApp: wa.me/919876543210 if you are interested in scheduling an introductory call.",
+      "expectedTriggeredRules": ["MSG_ARTIFICIAL_URGENCY", "SND_CHAT_REDIRECT"],
+      "expectedVerdict": "Suspicious"
+    },
+    {
+      "id": "TC_LEGIT_1",
+      "type": "legitimate",
+      "description": "Legitimate TCS campus drive invitation via official portal",
+      "input": "Dear Candidate, Thank you for registering for the TCS National Qualifier Test (TQT). Your test slot is scheduled on Saturday. Please log in to your dashboard at https://nextstep.tcs.com/campus/ to download your hall ticket. TCS does not charge any application or placement fee at any stage.",
+      "expectedTriggeredRules": [],
+      "expectedVerdict": "No red flags found"
+    },
+    {
+      "id": "TC_LEGIT_2",
+      "type": "legitimate",
+      "description": "Official AICTE internship portal notification",
+      "input": "Greetings from the AICTE Internship Portal. You have applied for the Web Development Internship. Shortlisted candidates will be invited for a technical interview round by the recruiting organization. Track your application status directly at https://internship.aicte-india.org. Never share OTP or payment details.",
+      "expectedTriggeredRules": [],
+      "expectedVerdict": "No red flags found"
+    }
+  ]
+}
